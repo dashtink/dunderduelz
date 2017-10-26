@@ -4,10 +4,10 @@ body {
 }
 
 body {
-	font-family: 'Alef', sans-serif;
+	font-family: 'Roboto', sans-serif;
 }
 h1 {
-	font-family: 'Gloria Hallelujah', sans-serif;
+	font-family: 'Work Sans', sans-serif;
 }
 
 #menu {
@@ -63,4 +63,29 @@ h1 {
 }
 #game .grid.ended .slot:not(.highlight) {
 	opacity: 0.5;
+}
+
+input#chatMessage {
+	width: 100%;
+	margin: 5px 0px;
+	background-color: #f9f9f9;
+}
+
+.chatbox {
+	border: 1px solid #eee;
+	margin-bottom: 40px;
+}
+
+.chattextbox {
+	border: 1px solid #eee;
+	background-color: lightgrey;
+}
+
+.chatbutton {
+	background-color: tomato;
+	border-radius: 5px;
+	border: 1px solid transparent;
+	padding: 5px 8px;
+	line-height: 1.25;
+	color: white;
 }

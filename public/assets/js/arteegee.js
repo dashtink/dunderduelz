@@ -22,11 +22,26 @@
 		[],
 		[]
 	]
+	// 20171001 - current card and deck
+	var currentCard = null
+	var deck = []
 
 	function begin() {
 		conn.on('data', function(data) {
 			switch(data[0]) {
-				case 'move':
+                case 'chat':
+                    console.log('got chat data')
+										$('#game .alert p').text('Got Chat Message: ' + data[1])
+										console.log(data[1])
+                    break
+								case 'drew':
+										console.log('oppenent drew card ' + data[1] + ' cards remain')
+										$('#enemyCardsLeft').val(data[1])
+										if (data[1] <= 0) {
+											wonGame()
+										}
+										break
+                case 'move':
 					if(turn) {
 						return
 					}
@@ -173,6 +188,15 @@
 	})
 
 	function initialize() {
+		// 20171001 - Prepare Deck
+		console.log("Deck size: " + deck.length)
+		console.log("Adding cards to deck")
+		for (i = 0; i < 20; i++) {
+		    deck[i] = new Card(i)
+		}
+		console.log("Deck size: " + deck.length)
+		$('#myCardsLeft').val(deck.length)
+
 		peer = new Peer('', {
 			host: location.hostname,
 			port: location.port || (location.protocol === 'https:' ? 443 : 80),
@@ -231,16 +255,77 @@
 				begin()
 			})
 		})
-	}
+    }
+
+		function lostGame() {
+			$('#game .grid').addClass('ended')
+			$('#game .alert p').text('You lost!')
+		}
+		function wonGame() {
+			$('#game .grid').addClass('ended')
+			$('#game .alert p').text('You won!')
+		}
+
+
+// CHAT
+
+/*
+var chatMessageText = document.getElementById('chatMessage').value;
+var chatBtn = document.getElementById('chatButton');
+
+chatBtn.addEventListener('click', () => {
+
+  var chatBoxDiv = document.getElementById('addChatMessage');
+  var pChat = document.createElement('p');
+    pChat.textContent = chatMessageText;
+    chatBocDiv.appendChild('pChat');
+
+console.log('Chatting happened');
+});
+*/
+
+
+
 
 	$('a[href="#start"]').on('click', function(event) {
 		event.preventDefault()
 		start()
 	})
+
 	$('a[href="#join"]').on('click', function(event) {
 		event.preventDefault()
 		join()
 	})
+
+
+    $('a[href="#chat"]').on('click', function (event) {
+        event.preventDefault()
+				var messageContent = document.getElementById('chatMessage').value;
+				$('#game .alert p').text(messageContent);
+				conn.send(['chat', messageContent]);
+				console.log('Sent a chat!');
+    })
+
+		$('a[href="#deckStack"]').on('click', function (event) {
+				console.log('Entered #deckStack')
+				event.preventDefault()
+				console.log('popping card')
+				currentCard = deck.pop()
+				conn.send(['drew', deck.length]);
+				if(deck.length == 0) {
+					lostGame()
+				}
+				$('#myCardsLeft').val(deck.length)
+				console.log('Current Card Name: ' + currentCard.getCardName())
+				console.log('New Deck Size: ' + deck.length)
+    })
+/*
+		function chat(messageContentIn) {
+				initialize()
+				conn.send('chat', messageContentIn);
+				console.log(messageContentIn);
+		}
+*/
 
 	$('#game .grid td').on('mouseenter', function() {
 		$('#game .grid tr td:nth-child('+($(this).index()+1)+')').addClass('hover')

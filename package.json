@@ -1,7 +1,7 @@
 {
   "name": "arteegee",
   "version": "0.1.0",
-  "description": "Connect Four over WebRTC",
+  "description": "DD over WebRTC",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
